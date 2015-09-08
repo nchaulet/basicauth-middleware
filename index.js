@@ -9,26 +9,30 @@ var unauthorized = function(res) {
 module.exports = function(username, password) {
   return function(req, res, next) {
     var user = basicAuth(req);
-
     if (!user) {
       return unauthorized(res);
     }
 
-    if (typeof username === 'string') {
-      if (!user || user.name !== username || user.pass !== password) {
+    var authorized = null;
+    if (typeof username === 'function') {
+      var checkFn = username;
+      authorized = checkFn(user.name, user.pass, function(authentified) {
+        if (authentified) {
+          return next();
+        }
+
         return unauthorized(res);
-      }
-
-      return next();
+      });
+    } else {
+      authorized = !(!user || user.name !== username || user.pass !== password);
     }
 
-   var checkFn = username;
-   checkFn(user.name, user.pass, function(authentified) {
-    if (authentified) {
-      return next();
+    if (authorized === false) {
+      return unauthorized(res);
     }
 
-    return unauthorized(res);
-   });
+    if (authorized === true) {
+      return next();
+    }
   };
 };

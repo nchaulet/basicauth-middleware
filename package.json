@@ -4,11 +4,17 @@
   "description": "Express js basic auth middleware",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/mocha"
   },
   "author": "n.chaulet@gmail.com",
   "license": "MIT",
   "dependencies": {
     "basic-auth": "^1.0.3"
+  },
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "mocha": "^2.3.2",
+    "node-mocks-http": "^1.4.3",
+    "sinon": "^1.16.1"
   }
 }
