@@ -12,6 +12,7 @@ npm install basicauth-middleware --save
 
 ```javascript
 var app = express();
+var basicauth = require('basicauth-middleware');
 
 // Using plain username and password
 app.use(basicauth('username', 'password'));
