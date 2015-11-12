@@ -6,6 +6,12 @@
   "scripts": {
     "test": "node_modules/.bin/mocha"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nchaulet/basicauth-middleware.git"
+  },
+  "homepage": "https://github.com/nchaulet/basicauth-middleware",
+  "bugs": "https://github.com/nchaulet/basicauth-middleware/issues",
   "author": "n.chaulet@gmail.com",
   "license": "MIT",
   "dependencies": {
