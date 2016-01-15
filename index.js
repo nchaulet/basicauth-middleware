@@ -1,16 +1,17 @@
 var basicAuth = require('basic-auth');
 
-var unauthorized = function(res) {
-  res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+var unauthorized = function(res, realm) {
+  var realm = realm || 'Authorization Required';
+  res.set('WWW-Authenticate', 'Basic realm=' + realm);
 
   return res.sendStatus(401);
 };
 
-module.exports = function(username, password) {
+module.exports = function(username, password, realm) {
   return function(req, res, next) {
     var user = basicAuth(req);
     if (!user) {
-      return unauthorized(res);
+      return unauthorized(res, realm);
     }
 
     var authorized = null;
@@ -21,14 +22,14 @@ module.exports = function(username, password) {
           return next();
         }
 
-        return unauthorized(res);
+        return unauthorized(res, realm);
       });
     } else {
       authorized = !(!user || user.name !== username || user.pass !== password);
     }
 
     if (authorized === false) {
-      return unauthorized(res);
+      return unauthorized(res, realm);
     }
 
     if (authorized === true) {

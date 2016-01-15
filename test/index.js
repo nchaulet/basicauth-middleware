@@ -34,6 +34,22 @@ describe('basicauth-middleware', function() {
     assert.equal(res.statusCode, 401);
   });
 
+  it('should respond with default realm', function() {
+    var res = httpMocks.createResponse();
+    var next = sinon.spy();
+    middleware('no', 'no')(req, res, next);
+
+    assert.equal(res.getHeader('WWW-Authenticate'), 'Basic realm=Authorization Required');
+  });
+
+  it('should respond with custom realm if configured', function() {
+    var res = httpMocks.createResponse();
+    var next = sinon.spy();
+    middleware('no', 'no', 'Secret Garden')(req, res, next);
+
+    assert.equal(res.getHeader('WWW-Authenticate'), 'Basic realm=Secret Garden');
+  });
+
   it('should call next if checkFn return true', function() {
     var res = httpMocks.createResponse();
     var next = sinon.spy();

@@ -17,6 +17,9 @@ var basicauth = require('basicauth-middleware');
 // Using plain username and password
 app.use(basicauth('username', 'password'));
 
+// Using plain username and password with custom realm
+app.use(basicauth('username', 'password', 'Secrets Within!'));
+
 // Using sync callback
 app.use(basicauth(function(username, password) {
     // Your check function
