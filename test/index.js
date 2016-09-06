@@ -2,6 +2,7 @@ var middleware = require('../index');
 var httpMocks = require('node-mocks-http');
 var sinon = require('sinon');
 var assert = require('chai').assert;
+var Promise = require('es6-promise').Promise;
 
 var req  = httpMocks.createRequest({
   headers: {
