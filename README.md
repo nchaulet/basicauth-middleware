@@ -28,12 +28,21 @@ app.use(basicauth(function(username, password) {
     return auth;
 }));
 
-// Using async callback
+// Using node style async callback
 app.use(basicauth(function(username, password, cb) {
     // Your check function
     const auth = checkAuth();
 
-    cb(auth);
+    cb(null, auth);
+}));
+```
+
+// Using Promise
+app.use(basicauth(function(username, password, cb) {
+    // Your check function
+    return checkAuth(username, password).then(() => {
+      return true;
+    });
 }));
 ```
 
