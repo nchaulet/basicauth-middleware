@@ -35,7 +35,6 @@ app.use(basicauth(function(username, password, cb) {
 
     cb(null, auth);
 }));
-```
 
 // Using Promise
 app.use(basicauth(function(username, password, cb) {
