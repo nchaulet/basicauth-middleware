@@ -1,3 +1,5 @@
+'use strict';
+
 const middleware = require('../index');
 const httpMocks = require('node-mocks-http');
 const sinon = require('sinon');
@@ -5,7 +7,7 @@ const assert = require('chai').assert;
 
 const req  = httpMocks.createRequest({
   headers: {
-    Authorization: 'Basic ' + (new Buffer('username:password')).toString('base64')
+    Authorization: `Basic ${(new Buffer('username:password')).toString('base64')}`
   }
 });
 
