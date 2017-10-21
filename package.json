@@ -17,6 +17,9 @@
   "dependencies": {
     "basic-auth": "^2.0.0"
   },
+   "engines": {
+    "node": ">= 4.0.0"
+  },
   "devDependencies": {
     "chai": "^3.2.0",
     "mocha": "^4.0.1",
