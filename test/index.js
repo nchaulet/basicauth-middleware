@@ -1,10 +1,9 @@
-var middleware = require('../index');
-var httpMocks = require('node-mocks-http');
-var sinon = require('sinon');
-var assert = require('chai').assert;
-var Promise = require('es6-promise').Promise;
+const middleware = require('../index');
+const httpMocks = require('node-mocks-http');
+const sinon = require('sinon');
+const assert = require('chai').assert;
 
-var req  = httpMocks.createRequest({
+const req  = httpMocks.createRequest({
   headers: {
     Authorization: 'Basic ' + (new Buffer('username:password')).toString('base64')
   }
@@ -13,40 +12,40 @@ var req  = httpMocks.createRequest({
 describe('basicauth-middleware', function() {
   describe('With plain username and password', function() {
     it('should call next if user is authentified', function() {
-      var res = httpMocks.createResponse();
-      var next = sinon.spy();
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
       middleware('username', 'password')(req, res, next);
 
       assert.isTrue(next.called);
     });
 
     it('should not call next if user is not authentified', function() {
-      var res = httpMocks.createResponse();
-      var next = sinon.spy();
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
       middleware('userNotAuthetified', 'userNotAuthetified')(req, res, next);
 
       assert.isFalse(next.called);
     });
 
     it('should respond with 401 if user is not authentified', function() {
-      var res = httpMocks.createResponse();
-      var next = sinon.spy();
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
       middleware('userNotAuthetified', 'userNotAuthetified')(req, res, next);
 
       assert.equal(res.statusCode, 401);
     });
 
     it('should respond with default realm', function() {
-      var res = httpMocks.createResponse();
-      var next = sinon.spy();
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
       middleware('no', 'no')(req, res, next);
 
       assert.equal(res.getHeader('WWW-Authenticate'), 'Basic realm=Authorization Required');
     });
 
     it('should respond with custom realm if configured', function() {
-      var res = httpMocks.createResponse();
-      var next = sinon.spy();
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
       middleware('no', 'no', 'Secret Garden')(req, res, next);
 
       assert.equal(res.getHeader('WWW-Authenticate'), 'Basic realm=Secret Garden');
@@ -55,8 +54,8 @@ describe('basicauth-middleware', function() {
 
   describe('With sync checkFn', function() {
     it('should call next if checkFn return true', function() {
-      var res = httpMocks.createResponse();
-      var next = sinon.spy();
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
       middleware(function() {
         return true;
       })(req, res, next);
@@ -65,8 +64,8 @@ describe('basicauth-middleware', function() {
     });
 
     it('should not call next if checkFn return false', function() {
-      var res = httpMocks.createResponse();
-      var next = sinon.spy();
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
       middleware(function() {
         return false;
       })(req, res, next);
@@ -75,8 +74,8 @@ describe('basicauth-middleware', function() {
     });
 
     it('should respond with 401 if checkFn return false', function() {
-      var res = httpMocks.createResponse();
-      var next = sinon.spy();
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
       middleware(function() {
         return false;
       })(req, res, next);
@@ -85,9 +84,9 @@ describe('basicauth-middleware', function() {
     });
 
     it('should call next with error if an uncaught error occurs here', function() {
-      var res = httpMocks.createResponse();
-      var next = sinon.spy();
-      var err = new Error('Test error');;
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
+      const err = new Error('Test error');;
       middleware(function() {
         throw err;
       })(req, res, next);
@@ -98,8 +97,8 @@ describe('basicauth-middleware', function() {
 
   describe('With async checkFn', function() {
     it('should call next if checkFn call checkCb with true', function() {
-      var res = httpMocks.createResponse();
-      var next = sinon.spy();
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
       middleware(function(username, password, checkCb) {
         checkCb(null, true);
       })(req, res, next);
@@ -108,19 +107,19 @@ describe('basicauth-middleware', function() {
     });
 
     it('should call next with error checkFn call return an error', function() {
-      var error = new Error('test error');
-      var res = httpMocks.createResponse();
-      var next = sinon.spy();
+      const error = new Error('test error');
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
       middleware(function(username, password, checkCb) {
-        checkCb(new Error('test error'));
+        checkCb(error);
       })(req, res, next);
 
       assert.isTrue(next.calledWith(error));
     });
 
     it('should not call next if checkFn call checkCb with false', function() {
-      var res = httpMocks.createResponse();
-      var next = sinon.spy();
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
       middleware(function(username, password, checkCb) {
         checkCb(null, false);
       })(req, res, next);
@@ -129,8 +128,8 @@ describe('basicauth-middleware', function() {
     });
 
     it('should respond 401 if checkFn call checkCb with false', function() {
-      var res = httpMocks.createResponse();
-      var next = sinon.spy();
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
       middleware(function(username, password, checkCb) {
         checkCb(null, false);
       })(req, res, next);
@@ -139,8 +138,8 @@ describe('basicauth-middleware', function() {
     });
 
     it('should not call next if checkFn dont call checkCb', function() {
-      var res = httpMocks.createResponse();
-      var next = sinon.spy();
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
       middleware(function(username, password, checkCb) {
       })(req, res, next);
 
@@ -151,7 +150,7 @@ describe('basicauth-middleware', function() {
 
   describe('With promise', function() {
     it('call next with an autorized user', function(done) {
-      var res = httpMocks.createResponse();
+      const res = httpMocks.createResponse();
 
       middleware(function(username, password) {
         return Promise.resolve(true);
@@ -161,7 +160,7 @@ describe('basicauth-middleware', function() {
     });
 
     it('should call next with error with promise error', function(done) {
-      var res = httpMocks.createResponse();
+      const res = httpMocks.createResponse();
 
       middleware(function(username, password) {
         return Promise.reject(new Error('test'));
@@ -172,7 +171,7 @@ describe('basicauth-middleware', function() {
     });
 
     it('should send 401 with an unauthorized user', function(done) {
-      var res = httpMocks.createResponse({
+      const res = httpMocks.createResponse({
         eventEmitter: require('events').EventEmitter
       });
       var next = sinon.spy();
