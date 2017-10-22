@@ -1,8 +1,10 @@
-var basicAuth = require('basic-auth');
+'use strict';
+
+const basicAuth = require('basic-auth');
 
 function unauthorized(res, realm) {
-  var realm = realm || 'Authorization Required';
-  res.set('WWW-Authenticate', 'Basic realm=' + realm);
+  const _realm = realm || 'Authorization Required';
+  res.set('WWW-Authenticate', `Basic realm=${_realm}`);
 
   return res.sendStatus(401);
 };
@@ -11,16 +13,16 @@ function isPromiseLike(obj) {
   return obj && typeof obj.then === 'function';
 }
 
-module.exports = function(username, password, realm) {
-  return function(req, res, next) {
-    var user = basicAuth(req);
+function createMiddleware(username, password, realm) {
+  return function basicAuthMiddleware(req, res, next) {
+    const user = basicAuth(req);
     if (!user) {
       return unauthorized(res, realm);
     }
 
-    var authorized = null;
+    let authorized = null;
     if (typeof username === 'function') {
-      var checkFn = username;
+      const checkFn = username;
       try {
         authorized = checkFn(user.name, user.pass, function checkFnCallback(err, authentified) {
           if (err) {
@@ -48,7 +50,8 @@ module.exports = function(username, password, realm) {
           }
 
           return unauthorized(res, realm);
-        }, next);
+        })
+        .catch(next);
     }
 
     if (authorized === false) {
@@ -60,3 +63,6 @@ module.exports = function(username, password, realm) {
     }
   };
 };
+
+
+module.exports = createMiddleware;
