@@ -54,6 +54,40 @@ describe('basicauth-middleware', function() {
     });
   });
 
+  describe('With an array of usernames and passwords', function() {
+    it('should call next if user is authentified', function() {
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
+      middleware([['username', 'password'], ['username2', 'password2']])(req, res, next);
+
+      assert.isTrue(next.called);
+    });
+
+    it('should not call next if user is not authentified', function() {
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
+      middleware([['wrong user', 'password'], ['username2', 'password2']])(req, res, next);
+
+      assert.isFalse(next.called);
+    });
+
+    it('should respond with 401 if user is not authentified', function() {
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
+      middleware([['wrong user', 'password'], ['username2', 'password2']])(req, res, next);
+
+      assert.equal(res.statusCode, 401);
+    });
+
+    it('should respond with default realm', function() {
+      const res = httpMocks.createResponse();
+      const next = sinon.spy();
+      middleware([['wrong user', 'password'], ['username2', 'password2']])(req, res, next);
+
+      assert.equal(res.getHeader('WWW-Authenticate'), 'Basic realm=Authorization Required');
+    });
+  });
+
   describe('With sync checkFn', function() {
     it('should call next if checkFn return true', function() {
       const res = httpMocks.createResponse();

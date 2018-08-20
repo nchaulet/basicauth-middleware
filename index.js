@@ -13,6 +13,10 @@ function isPromiseLike(obj) {
   return obj && typeof obj.then === 'function';
 }
 
+function isValidUser(user, username, password) {
+  return !(!user || user.name !== username || user.pass !== password);
+}
+
 function createMiddleware(username, password, realm) {
   return function basicAuthMiddleware(req, res, next) {
     const user = basicAuth(req);
@@ -38,8 +42,10 @@ function createMiddleware(username, password, realm) {
       } catch(err) {
         next(err);
       }
+    } else if (Array.isArray(username)) {
+      authorized = username.some(([username, password]) => isValidUser(user, username, password));
     } else {
-      authorized = !(!user || user.name !== username || user.pass !== password);
+      authorized = isValidUser(user, username, password);
     }
 
     if (isPromiseLike(authorized)) {
@@ -63,6 +69,5 @@ function createMiddleware(username, password, realm) {
     }
   };
 };
-
 
 module.exports = createMiddleware;
