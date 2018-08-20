@@ -20,6 +20,9 @@ app.use(basicauth('username', 'password'));
 // Using plain username and password with custom realm
 app.use(basicauth('username', 'password', 'Secrets Within!'));
 
+// Using an array of username and password
+app.use(basicauth([['username', 'password'], ['username2', 'password2']]);
+
 // Using sync callback
 app.use(basicauth(function(username, password) {
     // Your check function
