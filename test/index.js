@@ -222,5 +222,23 @@ describe('basicauth-middleware', function() {
         done();
       });
     });
+
+    it('should send 401 with the correct realm to an unauthorized user', function(done) {
+      const res = httpMocks.createResponse({
+        eventEmitter: require('events').EventEmitter
+      });
+      var next = sinon.spy();
+
+      middleware(function(username, password) {
+        return Promise.resolve(false);
+      }, 'Secret Garden')(req, res, next);
+
+      res.on('end', function() {
+        assert.isFalse(next.called);
+        assert.equal(res.statusCode, 401);
+        assert.equal(res.getHeader('WWW-Authenticate'), 'Basic realm=Secret Garden');
+        done();
+      });
+    });
   });
 });

@@ -18,6 +18,10 @@ function isValidUser(user, username, password) {
 }
 
 function createMiddleware(username, password, realm) {
+  const _realm = typeof username === 'function'
+    ? password
+    : realm;
+
   return function basicAuthMiddleware(req, res, next) {
     const user = basicAuth(req);
     if (!user) {
@@ -37,7 +41,7 @@ function createMiddleware(username, password, realm) {
             return next();
           }
 
-          return unauthorized(res, realm);
+          return unauthorized(res, _realm);
         });
       } catch(err) {
         next(err);
@@ -55,13 +59,13 @@ function createMiddleware(username, password, realm) {
             return next();
           }
 
-          return unauthorized(res, realm);
+          return unauthorized(res, _realm);
         })
         .catch(next);
     }
 
     if (authorized === false) {
-      return unauthorized(res, realm);
+      return unauthorized(res, _realm);
     }
 
     if (authorized === true) {
