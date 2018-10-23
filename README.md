@@ -29,7 +29,7 @@ app.use(basicauth((username, password) => {
     const auth = checkAuth();
 
     return auth;
-}, 'custom optional realm));
+}, 'custom optional realm'));
 
 // Using node style async callback
 app.use(basicauth((username, password, cb) => {
