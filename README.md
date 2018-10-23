@@ -29,7 +29,7 @@ app.use(basicauth(function(username, password) {
     const auth = checkAuth();
 
     return auth;
-}));
+}, 'custom optional realm));
 
 // Using node style async callback
 app.use(basicauth(function(username, password, cb) {
@@ -37,7 +37,7 @@ app.use(basicauth(function(username, password, cb) {
     const auth = checkAuth();
 
     cb(null, auth);
-}));
+}, 'custom optional realm'));
 
 // Using Promise
 app.use(basicauth(function(username, password, cb) {
@@ -45,7 +45,7 @@ app.use(basicauth(function(username, password, cb) {
     return checkAuth(username, password).then(() => {
       return true;
     });
-}));
+}, 'custom optionnal realm'));
 ```
 
 ## Test
