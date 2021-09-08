@@ -21,7 +21,7 @@ app.use(basicauth('username', 'password'));
 app.use(basicauth('username', 'password', 'Secrets Within!'));
 
 // Using an array of username and password
-app.use(basicauth([['username', 'password'], ['username2', 'password2']]);
+app.use(basicauth([['username', 'password'], ['username2', 'password2']]));
 
 // Using sync callback
 app.use(basicauth((username, password) => {
